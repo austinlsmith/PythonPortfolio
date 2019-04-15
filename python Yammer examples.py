@@ -8,7 +8,7 @@ import numpy as np
 from matplotlib import pyplot as plt
 import seaborn as sns
 
-data = datasets[0]
+data = pd.read_csv(~/Desktop/Python/vgsales-12-4-2019.csv)
 data = data.fillna('')
 data.head()
 
