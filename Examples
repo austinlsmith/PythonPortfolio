@@ -10,18 +10,21 @@ data.head()
 #What Event occured the most on Yammer? 
 data['Event Name'].value_counts()[:5].plot(kind='bar')
 
-
+#what Locations are using Samsung most 
 event_index = data['Device'].str.contains('SAMSUNG')
 event_searches = data[event_index]
 event_searches['Location'].value_counts()[:10]
 
+#count Device values
 devices = data['Device']
 devices.value_counts()
 
+#create list for categorizing devices
 Apple = ['MACBOOK PRO', 'MACBOOK AIR', 'IPHONE 5', 'IPHONE 5S', 'IPAD AIR', 'MAC MINI', 'IPHONE 4S']
 Samsung = ['SAMSUNG GALAXY S4', 'SAMSUNG GALAXY NOTE', 'SAMSUNG GALAXY TABLET']
 Nexus = ['NEXUS 5', 'NEXUS 10', 'NEXUS 7']
 
+#function to return Device category
 def operating_system(platform):
     if platform in Apple:
         return 'Apple'
@@ -32,11 +35,13 @@ def operating_system(platform):
     else:
         return 'Other'
 
+#bar graph of frequency of operating_system 
 data['Device'].apply(operating_system)
 data['Device_Type'] = data['Device'].apply(operating_system)
 data[['Device_Type','Device']]
 data['Device_Type'].value_counts().plot(kind='bar')
 
+#list to categorize countries into regions
 North_America = ['United States', 'Mexico', 'Canada']
 Australia = ['Australia']
 Europe = ['Germany', 'United Kingdom', 'Ireland', 'Spain', 'France', 'Norway', 'Denmark', 'Isreal', 'Greece', 'Sweeden', 'Belgium', 'Netherlands','Portugal', 'Finalnd', 'Switzerland']
@@ -45,6 +50,7 @@ Asia = ['Japan', 'Phillipines', 'Indonesia', 'China', 'Taiwan', 'Korea', 'Malays
 Middle_East = ['Iraq', 'Turkey', 'Pakistan', 'India', 'Iran', 'United Arab Emirates', 'Saudi Arabia']
 Africa = ['Nigeria', 'South Africa', 'Egypt']
 
+#function to return Region
 def region(country):
     if country in North_America:
         return 'North America'
@@ -61,27 +67,31 @@ def region(country):
     else:
         return 'Australia'
 
-
+#count Region values after they are in categories
 data['Location'].apply(region)
 data['Region'] = data['Location'].apply(region)
 data[['Location','Region']]
 count = data['Region'].value_counts().plot(kind='bar')
 
+#grouping to prepare data for Histogram - group by Region 
 x_var = 'Device'
 groupby_var = 'Region'
 df_agg = data.loc[:, [x_var, groupby_var]].groupby(groupby_var)
 vals = [data[x_var].values.tolist() for i, df in df_agg]
 
+#adding features to Histogram
 plt.figure(figsize=(16,9), dpi= 80)
 colors = [plt.cm.Spectral(i/float(len(vals)-1)) for i in range(len(vals))]
 n, bins, patches = plt.hist(vals, data[x_var].unique().__len__(), stacked=True, density=False, color=colors[:len(vals)])
 
+#plot Histogram
 plt.title(f"Stacked Histogram of ${x_var}$ colored by ${groupby_var}$", fontsize=22)
 plt.xlabel(x_var)
 plt.ylabel("Frequency")
 plt.xticks(rotation=-45)
 plt.show()
 
+#Rotate Axis titles
 sns.countplot(x='Region', data=data)
 plt.xticks(rotation=-45)
 
@@ -92,7 +102,7 @@ def is_like(x):
   return x == 'like'
 def is_search(x):
   return x == 'search'
-  
+
 data['views'] = data['Event Name'].apply(lambda x: x == 'view')
 data['likes'] = data['Event Name'].apply(lambda x: x == 'like')
 data['searches'] = data['Event Name'].apply(lambda x: x == 'search')
