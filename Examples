@@ -1,4 +1,4 @@
-#datasets create from SQL query
+#datasets created from SQL query of yammer.events and yammer.experiments
 
 import pandas as pd
 import numpy as np
